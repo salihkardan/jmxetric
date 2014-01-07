@@ -46,31 +46,31 @@ public class MBeanSampler extends GSampler {
      * @param mbean the name of the mbean
      * @param attribute the name of the attribute
      * @param composite the name of the composite
-     * @param publishName the name to publish this attribute on
+     * @param name the name to publish this attribute on
      * @throws java.lang.Exception
      */
     public void addMBeanAttribute(String mbean, String attribute, String composite, 
                 GMetricType type, String units, GMetricSlope slope,
-                String publishName ) throws Exception {
+                String name ) throws Exception {
         MBeanHolder mbeanHolder = mbeanMap.get(mbean);
         if (mbeanHolder == null) {
             mbeanHolder = new MBeanHolder(mbean);
             mbeanMap.put(mbean, mbeanHolder);
         }
 
-        mbeanHolder.addAttribute(attribute, composite, type, slope, units, publishName);
+        mbeanHolder.addAttribute(attribute, composite, type, slope, units, name);
     }
     /**
      * Adds a mbean name/attribute pair to be sampled
      * @param mbean the name of the mbean
      * @param attribute the name of the attribute
-     * @param publishName the name to publish this attribute on
+     * @param name the name to publish this attribute on
      * @throws java.lang.Exception
      */
     public void addMBeanAttribute(String mbean, String attribute, 
                 GMetricType type, String units, GMetricSlope slope,
-                String publishName ) throws Exception {
-        addMBeanAttribute( mbean, attribute, null, type, units, slope, publishName );
+                String name ) throws Exception {
+        addMBeanAttribute( mbean, attribute, null, type, units, slope, name );
     }
 
     /**
@@ -100,21 +100,21 @@ public class MBeanSampler extends GSampler {
         private String units ;
         private GMetricType type ;
         private GMetricSlope slope ;
-        private String publishName ;
+        private String name ;
 
         public MBeanAttribute(String attributeName, String compositeKey, GMetricType type, 
-                                String units, GMetricSlope slope, String publishName ) {
+                                String units, GMetricSlope slope, String name ) {
             this.key = compositeKey ;
             this.canonicalName = attributeName + "." + compositeKey ;
             this.attributeName = attributeName;
             this.units = units ;
             this.type = type ;
             this.slope = slope ;
-            this.publishName = publishName ;
+            this.name = name ;
         }
         public MBeanAttribute(String attributeName, GMetricType type, GMetricSlope slope,  
-                String units, String publishName ) {
-			this(attributeName, null, type, units, slope, publishName);
+                String units, String name ) {
+			this(attributeName, null, type, units, slope, name);
         }
 
         public void publish(ObjectName objectName) {
@@ -144,7 +144,7 @@ public class MBeanSampler extends GSampler {
                 if (null != value){
                 	Publisher gm = getPublisher();
                 	log.finer("Announcing metric " + this.toString() + " value=" + value );
-                	gm.publish(process, publishName, value, getType(), getSlope(), getUnits());
+                	gm.publish(process, name, value, getType(), getSlope(), getUnits());
                 }
                 
             } catch ( javax.management.InstanceNotFoundException ex ) {
@@ -188,7 +188,7 @@ public class MBeanSampler extends GSampler {
         	buf.append(" units=").append(units);
         	buf.append(" type=").append(type);
         	buf.append(" slope=").append(slope);
-        	buf.append(" publishName=").append(publishName);
+        	buf.append(" name=").append(name);
             return buf.toString();
         }
 
@@ -223,9 +223,9 @@ public class MBeanSampler extends GSampler {
         }
 
         public void addAttribute(String attributeName, String compositeName, 
-        		GMetricType type, GMetricSlope slope, String units, String publishName ) {
+        		GMetricType type, GMetricSlope slope, String units, String name ) {
             attributes.add(new MBeanAttribute(attributeName, compositeName,
-            		type, units, slope, publishName));
+            		type, units, slope, name));
         }
 
         public void publish() {
